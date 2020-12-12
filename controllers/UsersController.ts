@@ -42,7 +42,6 @@ export class UsersController extends AbstractController {
     return async function(req: any, res: any, next: any) {
       let user: User = await User.findOne({ id: req.params.id }) as User;
       user.name = req.body.name;
-      user.name = req.body.name;
       user.login = req.body.login;
       user.password = req.body.password;
       await user.save();
