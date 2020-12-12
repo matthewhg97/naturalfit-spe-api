@@ -9,14 +9,14 @@ export class CartItem extends BaseEntity {
     @PrimaryGeneratedColumn()
     id?: number;
 
-    @ManyToOne(() => Product, product => product.cartItems)
+    @ManyToOne(() => Product, product => product.cartItems, { onDelete: 'CASCADE' })
     @JoinColumn()
     product?: Product;
 
     @Column({ default: 1 })
     quantity?: number;
 
-    @ManyToOne(() => Cart, cart => cart.items)
+    @ManyToOne(() => Cart, cart => cart.items, { onDelete: 'CASCADE' })
     @JoinColumn()
     cart?: Cart;
 

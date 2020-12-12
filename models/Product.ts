@@ -29,7 +29,7 @@ export class Product extends BaseEntity {
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
     createdAt?: Date;
 
-    @OneToMany(() => CartItem, cartItem => cartItem.product)
+    @OneToMany(() => CartItem, cartItem => cartItem.product, { onDelete: 'CASCADE' })
     @JoinColumn()
     cartItems?: CartItem[];
 }

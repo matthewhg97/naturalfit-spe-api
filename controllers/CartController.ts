@@ -1,7 +1,6 @@
 import { Cart } from "../models/Cart";
 import { CartItem } from "../models/CartItem";
 import { Product } from "../models/Product";
-import { User } from "../models/User";
 import { AbstractController } from "./AbstractController";
 
 export class CartController extends AbstractController {
@@ -15,12 +14,18 @@ export class CartController extends AbstractController {
 
     viewCart() {
         return async function(req: any, res: any, next: any) {
-          let cart: Cart | undefined = await Cart.findOne({ where: {id: req.params.id}, relations: ["user","items","items.product"] });
+          let cart: Cart = await Cart.findOne({ where: {id: req.params.id}, relations: ["user","items","items.product"] }) as Cart;
           if (cart) {
               res.send(cart);
           } else {
               res.status(404).send("this cart does not exist in the database.");
           }
+        }
+    }
+
+    viewAllCarts() {
+        return async function(req: any, res: any, next: any) {
+          res.send(await Cart.find({ relations: ["user","items","items.product"] }));
         }
     }
 
@@ -31,18 +36,18 @@ export class CartController extends AbstractController {
     }
 
     addItem() {
-      return async function(req: any, res: any, next: any) {
-          let product: Product | undefined = await Product.findOne({ name: req.body.productName });
-          let cart: Cart | undefined = await Cart.findOne({ id: req.body.cartId });
-          if (product && cart) {
-              let item: CartItem = new CartItem();
-              item.product = product;
-              item.cart = cart;
-              item.quantity = req.body.quantity;
-              await item.save();
-              res.send(item);
-          }          
-      }
+        return async function(req: any, res: any, next: any) {
+            let product: Product = await Product.findOne({ name: req.body.productName }) as Product;
+            let cart: Cart = await Cart.findOne({ id: req.body.cartId }) as Cart;
+            if (product && cart) {
+                let item: CartItem = new CartItem();
+                item.product = product;
+                item.cart = cart;
+                item.quantity = req.body.quantity;
+                await item.save();
+                res.send(item);
+            }          
+        }
     }
 
     removeItem() {
@@ -53,10 +58,24 @@ export class CartController extends AbstractController {
         }
     }
     
+    delete() {
+      return async function(req: any, res: any, next: any) {
+        let cart: Cart = await Cart.findOne({ id: req.params.id }) as Cart;
+        await cart.remove();
+        res.send(cart);
+      }
+    }
+  
+
     registerRoutes() {
         this.forRoute('/').get(this.index());
+
         this.forRoute('/items').get(this.viewItems());
+
+        this.forRoute('/carts').get(this.viewAllCarts());
         this.forRoute('/:id').get(this.viewCart());
+        this.forRoute('/:id').delete(this.delete());
+
         this.forRoute('/items').post(this.addItem());
         this.forRoute('/items/:id').delete(this.removeItem());
     }

@@ -5,7 +5,7 @@ export class IndexController extends AbstractController {
 
     index() {
       return function(req: any, res: any, next: any) {
-        res.send("naturalfit API V0");
+        res.send("naturalfit SPE-API V0");
       }
     }
     

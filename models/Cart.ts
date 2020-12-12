@@ -9,14 +9,14 @@ export class Cart extends BaseEntity {
     @PrimaryGeneratedColumn()
     id?: number;
 
-    @OneToOne(() => User)
+    @OneToOne(() => User, { onDelete: 'CASCADE' })
     @JoinColumn()
     user?: User;
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP'})
     createdAt?: Date;
 
-    @OneToMany(() => CartItem, cartItem => cartItem.cart)
+    @OneToMany(() => CartItem, cartItem => cartItem.cart, { onDelete: 'CASCADE' })
     @JoinColumn()
     items?: CartItem[];
 

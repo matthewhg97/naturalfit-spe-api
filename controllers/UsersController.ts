@@ -14,21 +14,13 @@ export class UsersController extends AbstractController {
 
   listOne() {
     return async function(req: any, res: any, next: any) {
-      let user: User | undefined = await User.findOne({ id: req.params.id });
+      let user: User | undefined = await User.findOne({ where: {id: req.params.id}, relations: ["cart", "cart.items"] });
       if (user) {
         res.send(user);
       } else {
         res.status(404).send("user does not exist in the database.");
       }
     }
-  }
-
-  registerUser() {
-
-  }
-
-  registerCart() {
-
   }
 
   create() {
